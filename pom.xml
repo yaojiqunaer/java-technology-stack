@@ -10,6 +10,9 @@
     <modules>
         <module>spring-security-integration</module>
         <module>exception-spring-boot-starter</module>
+        <module>jpa-plus-spring-boot-starter</module>
+        <module>commons-lang</module>
+        <module>resttemplate-spring-boot-starter</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -23,21 +26,10 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <spring.boot.version>3.1.5</spring.boot.version>
+        <apache.commons.collections4>4.4</apache.commons.collections4>
+        <apache.httpcomponents.httpclient>5.2.1</apache.httpcomponents.httpclient>
+        <google.guava.version>32.1.1-jre</google.guava.version>
     </properties>
-
-<!--    <repositories>-->
-<!--        <repository>-->
-<!--            <id>aliyun</id>-->
-<!--            <name>aliyun</name>-->
-<!--            <url>https://maven.aliyun.com/repository/public</url>-->
-<!--            <releases>-->
-<!--                <enabled>true</enabled>-->
-<!--            </releases>-->
-<!--            <snapshots>-->
-<!--                <enabled>false</enabled>-->
-<!--            </snapshots>-->
-<!--        </repository>-->
-<!--    </repositories>-->
 
     <dependencyManagement>
         <dependencies>
@@ -48,8 +40,39 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${apache.commons.collections4}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.httpcomponents.client5</groupId>
+                <artifactId>httpclient5</artifactId>
+                <version>${apache.httpcomponents.httpclient}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${google.guava.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+    </dependencies>
 
     <build>
         <pluginManagement>
