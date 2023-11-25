@@ -1,5 +1,6 @@
 package io.github.yaojiqunaer.exception.handler;
 
+import io.github.yaojiqunaer.exception.ApiResponse;
 import io.github.yaojiqunaer.exception.BaseApiResponse;
 import io.github.yaojiqunaer.exception.exception.BaseInternalException;
 import lombok.extern.slf4j.Slf4j;
@@ -16,15 +17,15 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Configuration
 public class GlobalExceptionHandler implements BaseExceptionHandler{
 
-    @ExceptionHandler(value = {BaseInternalException.class})
+    @ExceptionHandler(BaseInternalException.class)
     @ResponseStatus(HttpStatus.OK)
-    public BaseApiResponse<?> handle(BaseInternalException e) {
+    public ApiResponse<?> handle(BaseInternalException e) {
         log.error("global exception handle", e);
         return BaseApiResponse.error(e.getMessage());
     }
 
-    @ExceptionHandler(value = {Exception.class})
-    public BaseApiResponse<?> handle(Exception e) {
+    @ExceptionHandler(Exception.class)
+    public ApiResponse<?> handle(Exception e) {
         log.error("global exception handle", e);
         return BaseApiResponse.error(e.getMessage());
     }
