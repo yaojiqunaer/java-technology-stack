@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright 2010-2011 The myBatis Team
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<configuration debug="false">
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
+    <!--    <property name="LOG_HOME" value="/TRS/LOGS/APOLLO/devops_console"/>-->
+    <springProperty scope="context" name="LOG_HOME" source="logging.file.path" defaultValue="${user.dir}"/>
+
+    <!--定义主机名-->
+    <!--    <springProperty scope="context" name="HOSTNAME" source="logging.hostname" defaultValue="localhost"/>-->
+
+    <!-- 自定义级别颜色渲染类 -->
+    <conversionRule conversionWord="customcolor" converterClass="io.github.yaojiqunaer.logback.LogbackColorful"/>
+    <!--ch.qos.logback.classic.PatternLayout-->
+    <!--
+    颜色：ch.qos.logback.classic.PatternLayout
+    %customcolor：表示使用自定义渲染类
+    -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%red(%d{yyyy-MM-dd HH:mm:ss.SSS}) ${PID:- } %customcolor(%-5level) %blue([%20.20thread]) %magenta(%-40.40logger{39}) - %msg%n"/>
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="io.github.yaojiqunaer.logback.LogbackPatternLayoutEncoder">
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <!-- 日志字符集（默认ISO-8859-1） -->
+            <charset>UTF-8</charset>
+            <!-- 开启脱敏（默认false） -->
+            <sensitive>true</sensitive>
+            <!-- 脱敏规则列表 -->
+            <replaces>
+                <!-- 脱敏规则 -->
+                <replace>
+                    <!-- 11位的手机号：保留前3后4 -->
+                    <regex>
+                        <![CDATA[
+				(mobile|手机号)(=|=\[|\":\"|:|：|='|':')(1)([3-9]{2})(\d{4})(\d{4})(\]|\"|'|)
+							]]>
+                    </regex>
+                    <replacement>$1$2$3$4****$6$7</replacement>
+                </replace>
+                <replace>
+                    <!-- 固定电话： XXXX-XXXXXXXX或XXX-XXXXXXXX，保留区号+前2后2 -->
+                    <regex>
+                        <![CDATA[
+				(tel|座机)(=|=\[|\":\"|:|：|='|':')([\d]{3,4}-)(\d{2})(\d{4})(\d{2})(\]|\"|'|)
+							]]>
+                    </regex>
+                    <replacement>$1$2$3$4****$6$7</replacement>
+                </replace>
+                <replace>
+                    <!-- 地址：汉字+字母+数字+下划线+中划线，留前3个汉字 -->
+                    <regex>
+                        <![CDATA[
+				(地址|住址|address|addr)(=|=\[|\":\"|:|：|='|':')([\u4e00-\u9fa5]{3})(\w|[\u4e00-\u9fa5]|-)*(\]|\"|'|)
+							]]>
+                    </regex>
+                    <replacement>$1$2$3****$5</replacement>
+                </replace>
+                <replace>
+                    <!-- 19位的卡号，保留后4 -->
+                    <regex>
+                        <![CDATA[
+				(cardNo|卡号)(=|=\[|\":\"|:|：|='|':')(\d{15})(\d{4})(\]|\"|'|)
+							]]>
+                    </regex>
+                    <replacement>$1$2***************$4$5</replacement>
+                </replace>
+                <replace>
+                    <!-- 姓名,2-4汉字，留前1-->
+                    <regex>
+                        <![CDATA[
+				(name|姓名)(=|=\[|\":\"|:|：|='|':')([\u4e00-\u9fa5]{1})([\u4e00-\u9fa5]{1,3})(\]|\"|'|)
+							]]>
+                    </regex>
+                    <replacement>$1$2$3**$5</replacement>
+                </replace>
+
+                <replace>
+                    <!--  密码 6位数字，全* -->
+                    <regex>
+                        <![CDATA[
+					(password|pwd|密码|验证码)(=|=\[|\":\"|:|：|='|':')(.{1})(.*?(?=,|\.|。|，|\s|\n))
+							]]>
+                    </regex>
+                    <replacement>$1$2$3******</replacement>
+                </replace>
+
+                <replace>
+                    <!-- 身份证，18位（结尾为数字或X、x），保留前1后1 -->
+                    <regex>
+                        <![CDATA[
+							(身份证号|idCard)(=|=\[|\":\"|:|：|='|':')(\d{1})(\d{16})([\d|X|x]{1})(\]|\"|)
+							]]>
+                    </regex>
+                    <replacement>$1$2$3****************$5$6</replacement>
+                </replace>
+                <replace>
+                    <!-- 邮箱，保留@前的前1后1 -->
+                    <regex>
+                        <![CDATA[
+							(\w{1})(\w*)(\w{1})@(\w+).com
+							]]>
+                    </regex>
+                    <replacement>$1****$3@$4.com</replacement>
+                </replace>
+            </replaces>
+        </encoder>
+    </appender>
+    <!-- 按照每天生成日志文件 -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <!--            <FileNamePattern>${LOG_HOME}/devops_console/devops_console.log.${HOSTNAME}.%d{yyyy-MM-dd}.log</FileNamePattern>-->
+            <FileNamePattern>${LOG_HOME}/app.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>90</MaxHistory>
+        </rollingPolicy>
+        <encoder class="io.github.yaojiqunaer.logback.LogbackPatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%date{yyyy-MM-dd HH:mm:ss.SSS} | %thread | %-5level | %msg%n</pattern>
+            <charset>UTF-8</charset>
+            <!-- 开启脱敏（默认false） -->
+            <sensitive>true</sensitive>
+            <!-- 脱敏规则列表 -->
+            <replaces>
+                <!-- 脱敏规则 -->
+                <replace>
+                    <!-- 11位的手机号：保留前3后4 -->
+                    <regex>
+                        <![CDATA[
+				(mobile|手机号)(=|=\[|\":\"|:|：|='|':')(1)([3-9]{2})(\d{4})(\d{4})(\]|\"|'|)
+							]]>
+                    </regex>
+                    <replacement>$1$2$3$4****$6$7</replacement>
+                </replace>
+                <replace>
+                    <!-- 固定电话： XXXX-XXXXXXXX或XXX-XXXXXXXX，保留区号+前2后2 -->
+                    <regex>
+                        <![CDATA[
+				(tel|座机)(=|=\[|\":\"|:|：|='|':')([\d]{3,4}-)(\d{2})(\d{4})(\d{2})(\]|\"|'|)
+							]]>
+                    </regex>
+                    <replacement>$1$2$3$4****$6$7</replacement>
+                </replace>
+                <replace>
+                    <!-- 地址：汉字+字母+数字+下划线+中划线，留前3个汉字 -->
+                    <regex>
+                        <![CDATA[
+				(地址|住址|address|addr)(=|=\[|\":\"|:|：|='|':')([\u4e00-\u9fa5]{3})(\w|[\u4e00-\u9fa5]|-)*(\]|\"|'|)
+							]]>
+                    </regex>
+                    <replacement>$1$2$3****$5</replacement>
+                </replace>
+                <replace>
+                    <!-- 19位的卡号，保留后4 -->
+                    <regex>
+                        <![CDATA[
+				(cardNo|卡号)(=|=\[|\":\"|:|：|='|':')(\d{15})(\d{4})(\]|\"|'|)
+							]]>
+                    </regex>
+                    <replacement>$1$2***************$4$5</replacement>
+                </replace>
+                <replace>
+                    <!-- 姓名,2-4汉字，留前1-->
+                    <regex>
+                        <![CDATA[
+				(name|姓名)(=|=\[|\":\"|:|：|='|':')([\u4e00-\u9fa5]{1})([\u4e00-\u9fa5]{1,3})(\]|\"|'|)
+							]]>
+                    </regex>
+                    <replacement>$1$2$3**$5</replacement>
+                </replace>
+
+                <replace>
+                    <!--  密码 6位数字，全* -->
+                    <regex>
+                        <![CDATA[
+					(password|pwd|密码|验证码)(=|=\[|\":\"|:|：|='|':')(.{1})(.*?(?=,|\.|。|，|\s|\n))
+							]]>
+                    </regex>
+                    <replacement>$1$2$3******</replacement>
+                </replace>
+
+                <replace>
+                    <!-- 身份证，18位（结尾为数字或X、x），保留前1后1 -->
+                    <regex>
+                        <![CDATA[
+							(身份证号|idCard)(=|=\[|\":\"|:|：|='|':')(\d{1})(\d{16})([\d|X|x]{1})(\]|\"|)
+							]]>
+                    </regex>
+                    <replacement>$1$2$3****************$5$6</replacement>
+                </replace>
+                <replace>
+                    <!-- 邮箱，保留@前的前1后1 -->
+                    <regex>
+                        <![CDATA[
+							(\w{1})(\w*)(\w{1})@(\w+).com
+							]]>
+                    </regex>
+                    <replacement>$1****$3@$4.com</replacement>
+                </replace>
+            </replaces>
+        </encoder>
+        <!--日志文件最大的大小-->
+        <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>100MB</MaxFileSize>
+        </triggeringPolicy>-->
+    </appender>
+
+    <!-- 按照每天生成日志文件 -->
+    <appender name="FILE_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日志文件输出的文件名-->
+            <!--            <FileNamePattern>${LOG_HOME}/devops_console/devops_console.json.${HOSTNAME}.%d{yyyy-MM-dd}.log</FileNamePattern>-->
+            <FileNamePattern>${LOG_HOME}/app.%d{yyyy-MM-dd}.log</FileNamePattern>
+            <!--日志文件保留天数-->
+            <MaxHistory>90</MaxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!--日志文件最大的大小-->
+        <!--<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>100MB</MaxFileSize>
+        </triggeringPolicy>-->
+    </appender>
+    <!-- show parameters for hibernate sql 专为 Hibernate 定制 -->
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="INFO"/>
+    <logger name="org.hibernate.SQL" level="INFO"/>
+    <logger name="org.hibernate.engine.QueryParameters" level="INFO"/>
+    <logger name="org.hibernate.engine.query.HQLQueryPlan" level="INFO"/>
+
+    <!--myibatis log configure-->
+    <logger name="com.apache.ibatis" level="TRACE"/>
+    <logger name="java.sql.Connection" level="INFO"/>
+    <logger name="java.sql.Statement" level="INFO"/>
+    <logger name="java.sql.PreparedStatement" level="INFO"/>
+
+
+    <!-- 日志输出级别 -->
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

@@ -13,6 +13,7 @@
         <module>jpa-plus-spring-boot-starter</module>
         <module>commons-lang</module>
         <module>resttemplate-spring-boot-starter</module>
+        <module>sample-logback</module>
     </modules>
     <packaging>pom</packaging>
 
