@@ -14,6 +14,7 @@
         <module>commons-lang</module>
         <module>resttemplate-spring-boot-starter</module>
         <module>sample-logback</module>
+        <module>sample-kafka</module>
     </modules>
     <packaging>pom</packaging>
 
