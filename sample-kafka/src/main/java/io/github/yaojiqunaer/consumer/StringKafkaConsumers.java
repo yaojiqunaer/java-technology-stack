@@ -6,11 +6,13 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Component;
 
+import static io.github.yaojiqunaer.common.Const.STRING_TOPIC;
+
 @Slf4j
 @Component
-public class KafkaConsumers {
+public class StringKafkaConsumers {
 
-    @KafkaListener(topics = "test-topic", groupId = "${spring.kafka.consumer.group-id:test-group}")
+    @KafkaListener(topics = STRING_TOPIC, groupId = "${spring.kafka.consumer.group-id:test-group}")
     public void handleMessage(ConsumerRecord<String, Object> record, Acknowledgment acknowledgment) {
         try {
             String message = (String) record.value();
