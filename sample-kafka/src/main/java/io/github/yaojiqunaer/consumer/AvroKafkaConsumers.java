@@ -13,7 +13,7 @@ import static io.github.yaojiqunaer.common.Const.AVRO_TOPIC;
 @Component
 public class AvroKafkaConsumers {
 
-    @KafkaListener(topics = AVRO_TOPIC, groupId = "${spring.kafka.consumer.group-id:test-group}", containerFactory = "avroKafkaListenerContainerFactory")
+    @KafkaListener(topics = AVRO_TOPIC, groupId = "${spring.kafka.consumer.group-id:group-id-test}", containerFactory = "avroKafkaListenerContainerFactory")
     public void handleMessage(ConsumerRecord<String, User> record, Acknowledgment acknowledgment) {
         try {
             User value = record.value();
