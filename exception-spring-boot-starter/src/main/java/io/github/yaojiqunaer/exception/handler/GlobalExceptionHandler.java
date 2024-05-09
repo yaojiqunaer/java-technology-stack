@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice(annotations = {RestController.class, Controller.class})
 @Configuration
-public class GlobalExceptionHandler implements BaseExceptionHandler{
+public class GlobalExceptionHandler implements BaseExceptionHandler {
 
     @ExceptionHandler(BaseInternalException.class)
     @ResponseStatus(HttpStatus.OK)

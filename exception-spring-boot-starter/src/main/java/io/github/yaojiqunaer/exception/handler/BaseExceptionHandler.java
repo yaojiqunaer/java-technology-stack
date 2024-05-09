@@ -7,8 +7,10 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.HttpMediaTypeException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
@@ -17,9 +19,26 @@ import javax.lang.model.element.ElementKind;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
 
-public interface BaseExceptionHandler {
+public interface BaseExceptionHandler extends MissingRequestValueExceptionHandler {
+
+    /**
+     * 处理HTTP请求头部异常
+     */
+    @ExceptionHandler(value = {HttpMediaTypeException.class})
+    default ApiResponse<?> httpHeaderExceptionHandler(HttpServletRequest req, Exception e) {
+        if (e instanceof HttpMediaTypeNotAcceptableException) {
+            return BaseApiResponse.badRequest("Client accept header not supported");
+        } else if (e instanceof HttpMediaTypeNotSupportedException) {
+            return BaseApiResponse.badRequest("Request content-type not supported");
+        } else {
+            return BaseApiResponse.badRequest("Unknown http header exception: " + e.getMessage());
+        }
+    }
 
     @ExceptionHandler(value = {MethodArgumentNotValidException.class, BindException.class})
     default ApiResponse<?> argumentNotValidExceptionHandler(HttpServletRequest req, Exception e) {
@@ -46,16 +65,7 @@ public interface BaseExceptionHandler {
         errorMap.forEach((key, value) -> stringJoiner.add(value));
         String enMsg = String.format("Validation of form parameters failed, details:[%s]", stringJoiner);
         //各参数校验结果返回
-        return BaseApiResponse.error(enMsg);
-    }
-
-    /**
-     * 请求参数缺失异常处理
-     */
-    @ExceptionHandler(value = MissingServletRequestParameterException.class)
-    default ApiResponse<?> missingParameterExceptionHandler(HttpServletRequest req,
-                                                            MissingServletRequestParameterException e) {
-        return BaseApiResponse.error("lost request parameter: " + e.getParameterName());
+        return BaseApiResponse.badRequest(enMsg);
     }
 
     /**
@@ -65,7 +75,7 @@ public interface BaseExceptionHandler {
     default ApiResponse<?> parameterErrorExceptionHandler(HttpServletRequest req,
                                                           MethodArgumentTypeMismatchException e) {
         String message = e.getName() + ":" + e.getMessage();
-        return BaseApiResponse.error(message);
+        return BaseApiResponse.badRequest(message);
     }
 
     /**
@@ -83,7 +93,7 @@ public interface BaseExceptionHandler {
                 }
             }
         }
-        return BaseApiResponse.error("method parameter valid error: " + errorMap);
+        return BaseApiResponse.badRequest("method parameter valid error: " + errorMap);
     }
 
 
