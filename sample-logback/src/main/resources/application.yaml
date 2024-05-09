@@ -1,0 +1,4 @@
+logging:
+  config: classpath:log/logback-dev.xml
+  file:
+    path: ${user.dir}/logs

@@ -34,8 +34,12 @@ public class BaseApiResponse<T> implements ApiResponse<T> {
         return new BaseApiResponse<>(code, error, false, null);
     }
 
-    public static <E extends InternalException> BaseApiResponse error(E exception) {
+    public static <E extends InternalException, T> BaseApiResponse<T> error(E exception) {
         return error(exception.getCode(), exception.getMessage());
+    }
+
+    public static <T> BaseApiResponse<T> badRequest(String message) {
+        return error(400, message);
     }
 
 }

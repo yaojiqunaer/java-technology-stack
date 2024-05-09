@@ -1,0 +1,14 @@
+package io.github.yaojiqunaer;
+
+import io.github.yaojiqunaer.exception.annotation.EnableGlobalException;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.kafka.annotation.EnableKafka;
+
+@SpringBootApplication
+@EnableGlobalException
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
