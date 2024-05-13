@@ -8,13 +8,14 @@
     <artifactId>java-technology-stack</artifactId>
     <version>0.0.1</version>
     <modules>
-        <module>spring-security-integration</module>
+        <module>sample/spring-security-integration</module>
         <module>exception-spring-boot-starter</module>
         <module>jpa-plus-spring-boot-starter</module>
         <module>commons-lang</module>
         <module>resttemplate-spring-boot-starter</module>
-        <module>sample-logback</module>
-        <module>sample-kafka</module>
+        <module>sample/spring-logback-integration</module>
+        <module>sample/spring-kafka-integration</module>
+        <module>sample/spring-redistempalte-integration</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -67,7 +68,7 @@
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <spring.boot.version>3.1.5</spring.boot.version>
+        <spring.boot.version>3.2.5</spring.boot.version>
         <apache.commons.collections4>4.4</apache.commons.collections4>
         <apache.httpcomponents.httpclient>5.2.1</apache.httpcomponents.httpclient>
         <google.guava.version>32.1.1-jre</google.guava.version>
