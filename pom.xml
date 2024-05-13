@@ -8,11 +8,11 @@
     <artifactId>java-technology-stack</artifactId>
     <version>0.0.1</version>
     <modules>
+        <module>framework/exception-spring-boot-starter</module>
+        <module>framework/jpa-plus-spring-boot-starter</module>
+        <module>framework/commons-lang</module>
+        <module>framework/resttemplate-spring-boot-starter</module>
         <module>sample/spring-security-integration</module>
-        <module>exception-spring-boot-starter</module>
-        <module>jpa-plus-spring-boot-starter</module>
-        <module>commons-lang</module>
-        <module>resttemplate-spring-boot-starter</module>
         <module>sample/spring-logback-integration</module>
         <module>sample/spring-kafka-integration</module>
         <module>sample/spring-redistempalte-integration</module>
