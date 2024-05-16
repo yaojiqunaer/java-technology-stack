@@ -12,6 +12,7 @@
         <module>framework/jpa-plus-spring-boot-starter</module>
         <module>framework/commons-lang</module>
         <module>framework/resttemplate-spring-boot-starter</module>
+        <module>framework/distributedlock-spring-boot-starter</module>
         <module>sample/spring-security-integration</module>
         <module>sample/spring-logback-integration</module>
         <module>sample/spring-kafka-integration</module>
