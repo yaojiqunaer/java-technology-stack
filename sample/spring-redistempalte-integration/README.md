@@ -6,11 +6,13 @@
 
 ## Redis数据类型
 
+可以借助https://try.redis.io/网站模拟在线的Redis控制台
+
 ### String
 
-#### 常用命令
+string是最基本的数据类型，简单的key-value形式
 
-可以借助https://try.redis.io/网站模拟在线的Redis控制台
+#### 常用命令
 
 ```shell
 # 设置 key-value 类型的值
@@ -86,9 +88,107 @@ value: `'{"name":"zhangshan", "age":18}'`
 
 ### List
 
+#### 常用命令
+
+```shell
+# 将一个或多个值value插入到key列表的表头(最左边)，最后的值在最左面
+LPUSH key value [value ...] 
+# 将一个或多个值value插入到key列表的表尾(最右边)
+RPUSH key value [value ...]
+# 移除并返回key列表的头元素
+LPOP key     
+# 移除并返回key列表的尾元素
+RPOP key 
+# 返回列表key中指定区间内的元素，区间以偏移量start和stop指定，从0开始
+LRANGE key start stop
+# 从key列表表头弹出一个元素，没有就阻塞timeout秒，如果timeout=0则一直阻塞
+BLPOP key [key ...] timeout
+# 从key列表表尾弹出一个元素，没有就阻塞timeout秒，如果timeout=0则一直阻塞
+BRPOP key [key ...] timeout
+```
+
+#### 使用场景
+
+##### 消息队列
+
+使用LPUSH+RPOP（或RPUSH+LPOP）命令组合，可以让消息先入先出，实现队列的作用
+
 ### Hash
 
+Hash的数据是key-value键值对的集合，key在一个hash中唯一
+
+#### 常用命令
+
+```shell
+# 存储一个哈希表key的键值
+HSET key field value   
+# 获取哈希表key对应的field键值
+HGET key field
+# 在一个哈希表key中存储多个键值对
+HMSET key field value [field value...] 
+# 批量获取哈希表key中多个field键值
+HMGET key field [field ...]       
+# 删除哈希表key中的field键值
+HDEL key field [field ...]    
+# 返回哈希表key中field的数量
+HLEN key       
+# 返回哈希表key中所有的键值
+HGETALL key 
+# 为哈希表key中field键的值加上增量n
+HINCRBY key field n   
+```
+
+#### 使用场景
+
+##### 缓存对象
+
+比如一个用户，它的属性包括 `{"id":1,"name":"zhangshan","age":30,"sex":"male","country":"China"}`，可以使用命令`hmset user:1 id 1 name zhangshan age 30 sex male country China`缓存user的信息。
+
+通常，JSON String或者Hash都能存储对象，如果对象更新不频繁，那么可以考虑使用String，如果对象的某个字段更新频率高，可以考虑使用Hash。
+
 ### Set
+
+Set是一种无序不重复的集合，可以借助Set做交集、并集等运算
+
+#### 常用命令
+
+```shell
+# 往集合key中存入元素，元素存在则忽略，若key不存在则新建
+SADD key member [member ...]
+# 从集合key中删除元素
+SREM key member [member ...] 
+# 获取集合key中所有元素
+SMEMBERS key
+# 获取集合key中的元素个数
+SCARD key
+# 判断member元素是否存在于集合key中
+SISMEMBER key member
+# 从集合key中随机选出count个元素，元素不从key中删除
+SRANDMEMBER key [count]
+# 从集合key中随机选出count个元素，元素从key中删除
+SPOP key [count]
+
+# 交集运算
+SINTER key [key ...]
+# 将交集结果存入新集合destination中
+SINTERSTORE destination key [key ...]
+
+# 并集运算
+SUNION key [key ...]
+# 将并集结果存入新集合destination中
+SUNIONSTORE destination key [key ...]
+
+# 差集运算
+SDIFF key [key ...]
+# 将差集结果存入新集合destination中
+SDIFFSTORE destination key [key ...]
+```
+
+#### 使用场景
+
+##### 共同好友（交集运算）
+
+可以使用Set的交集运算实现共同好友的业务，如id为1的用户有三个好友(id = 3, 4, 5)，id为2的用户有三个好友(id = 5, 6, 7)
 
 ### ZSet
 
