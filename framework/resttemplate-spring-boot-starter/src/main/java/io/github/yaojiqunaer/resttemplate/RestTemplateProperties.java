@@ -3,6 +3,7 @@ package io.github.yaojiqunaer.resttemplate;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 
 @Data
 @Configuration
@@ -20,7 +21,7 @@ public class RestTemplateProperties {
     private HttpConnPool httpConnPool = new HttpConnPool();
 
     @Data
-    class Strategy {
+    static class Strategy {
 
         /**
          * 是否跟随3XX重定向，RestTemplate默认不会
@@ -29,11 +30,20 @@ public class RestTemplateProperties {
         /**
          * SSL校验(HTTPS)是否开启，默认true
          */
-        private Boolean sslVerify = true;
+        private SSL ssl;
     }
 
     @Data
-    class HttpConnPool {
+    static class SSL {
+        private Boolean enabled = false;
+    }
+
+    @Data
+    static class HttpConnPool {
+        /**
+         * Http连接工厂
+         */
+        private String factoryClassName = SimpleClientHttpRequestFactory.class.getCanonicalName();
 
         /**
          * Http连接池最大连接数

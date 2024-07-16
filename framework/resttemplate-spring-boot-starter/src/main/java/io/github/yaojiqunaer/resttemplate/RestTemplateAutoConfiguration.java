@@ -11,6 +11,7 @@ import org.apache.hc.client5.http.socket.ConnectionSocketFactory;
 import org.apache.hc.client5.http.socket.PlainConnectionSocketFactory;
 import org.apache.hc.client5.http.ssl.NoopHostnameVerifier;
 import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactory;
+import org.apache.hc.core5.http.URIScheme;
 import org.apache.hc.core5.http.config.Registry;
 import org.apache.hc.core5.http.config.RegistryBuilder;
 import org.apache.hc.core5.util.TimeValue;
@@ -25,6 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.SSLContext;
@@ -51,11 +53,11 @@ public class RestTemplateAutoConfiguration {
         return new RestTemplateLogInterceptor();
     }
 
-    @Bean
+/*    @Bean
     @ConditionalOnMissingBean(ClientHttpRequestFactory.class)
     public ClientHttpRequestFactory clientHttpRequestFactory(RestTemplateProperties restTemplateProperties) {
         return new HttpComponentsClientHttpRequestFactory(generateHttpClient(restTemplateProperties));
-    }
+    }*/
 
     @Bean
     @Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -71,11 +73,25 @@ public class RestTemplateAutoConfiguration {
         return restTemplate;
     }
 
+    @Bean
+    @ConditionalOnMissingBean(ClientHttpRequestFactory.class)
+    public ClientHttpRequestFactory clientHttpRequestFactory(RestTemplateProperties restTemplateProperties) throws ClassNotFoundException {
+        String factoryClassName = restTemplateProperties.getHttpConnPool().getFactoryClassName();
+        Class<?> factory = Class.forName(factoryClassName);
+        if (factory.equals(SimpleClientHttpRequestFactory.class)) {
+            return new SimpleClientHttpRequestFactory();
+        }
+        if (factory.equals(HttpComponentsClientHttpRequestFactory.class)) {
+            return new HttpComponentsClientHttpRequestFactory(generateHttpClient(restTemplateProperties));
+        }
+        return null;
+    }
+
     public static HttpClient generateHttpClient(RestTemplateProperties restTemplateProperties) {
         RestTemplateProperties.HttpConnPool httpConnPool = restTemplateProperties.getHttpConnPool();
         RestTemplateProperties.Strategy strategy = restTemplateProperties.getStrategy();
         // 是否校验SSL
-        PoolingHttpClientConnectionManager connectionManager = strategy.getSslVerify() ?
+        PoolingHttpClientConnectionManager connectionManager = strategy.getSsl().getEnabled() ?
                 new PoolingHttpClientConnectionManager() : new PoolingHttpClientConnectionManager(initRegistry());
         //连接池最大连接数
         connectionManager.setMaxTotal(httpConnPool.getMaxTotal());
@@ -107,9 +123,10 @@ public class RestTemplateAutoConfiguration {
     @NotNull
     private static Registry<ConnectionSocketFactory> initRegistry() {
         RegistryBuilder<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.getSocketFactory());
+                .register(URIScheme.HTTP.id, PlainConnectionSocketFactory.getSocketFactory());
         SSLContext sslContext = getDisabledSSLContext();
-        registry.register("https", new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE));
+        registry.register(URIScheme.HTTPS.id, new SSLConnectionSocketFactory(sslContext,
+                NoopHostnameVerifier.INSTANCE));
         return registry.build();
     }
 
