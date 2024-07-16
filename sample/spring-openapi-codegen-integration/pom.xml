@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.github.yaojiqunaer</groupId>
+        <artifactId>java-technology-stack</artifactId>
+        <version>0.0.1</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <artifactId>spring-openapi-codegen-integration</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <openapi-generator-version>7.6.0</openapi-generator-version>
+        <swagger-annotations-jakarta-version>2.2.22</swagger-annotations-jakarta-version>
+        <jakarta-annotation-version>3.0.0</jakarta-annotation-version>
+        <jakarta-validation-version>3.1.0</jakarta-validation-version>
+        <jackson-databind-nullable-version>0.2.6</jackson-databind-nullable-version>
+
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-annotations-jakarta -->
+        <dependency>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations-jakarta</artifactId>
+            <version>${swagger-annotations-jakarta-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>${jackson-databind-nullable-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>${jakarta-annotation-version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>${jakarta-validation-version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.14</version>
+        </dependency>
+
+
+
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <!-- 设置构建的 jar 包名 -->
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <!-- activate the plugin -->
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <!-- RELEASE_VERSION -->
+                <version>${openapi-generator-version}</version>
+                <!-- /RELEASE_VERSION -->
+                <executions>
+                    <execution>
+                        <id>spring-server</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <!-- specify the swagger yaml -->
+                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+                            <!-- target to generate java server code -->
+                            <generatorName>spring</generatorName>
+                            <apiPackage>io.github.yaojiqunaer.openapi.api</apiPackage>
+                            <modelPackage>io.github.yaojiqunaer.openapi.model</modelPackage>
+                            <invokerPackage>io.github.yaojiqunaer.openapi</invokerPackage>
+                            <configOptions>
+                                <configPackage>io.github.yaojiqunaer.openapi.config</configPackage>
+                                <serializableModel>true</serializableModel>
+                                <annotationLibrary>swagger2</annotationLibrary>
+                                <documentationProvider>none</documentationProvider>
+                                <useJakartaEe>true</useJakartaEe>
+                                <delegatePattern>true</delegatePattern>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>client-resttemplate</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <!-- specify the swagger yaml -->
+                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+                            <!-- target to generate java server code -->
+                            <generatorName>java</generatorName>
+                            <library>resttemplate</library>
+                            <apiPackage>io.github.yaojiqunaer.openapi.client.resttemplate.api</apiPackage>
+                            <modelPackage>io.github.yaojiqunaer.openapi.client.resttemplate.model</modelPackage>
+                            <invokerPackage>io.github.yaojiqunaer.openapi.client.resttemplate</invokerPackage>
+                            <configOptions>
+                                <serializableModel>true</serializableModel>
+                                <annotationLibrary>swagger2</annotationLibrary>
+                                <documentationProvider>none</documentationProvider>
+                                <useJakartaEe>true</useJakartaEe>
+                                <delegatePattern>true</delegatePattern>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>client-native</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <!-- specify the swagger yaml -->
+                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
+                            <!-- target to generate java server code -->
+                            <generatorName>java</generatorName>
+                            <library>native</library>
+                            <apiPackage>io.github.yaojiqunaer.openapi.client.nativeclient.api</apiPackage>
+                            <modelPackage>io.github.yaojiqunaer.openapi.client.nativeclient.model</modelPackage>
+                            <invokerPackage>io.github.yaojiqunaer.openapi.client.nativeclient</invokerPackage>
+                            <configOptions>
+                                <serializableModel>true</serializableModel>
+                                <annotationLibrary>swagger2</annotationLibrary>
+                                <documentationProvider>none</documentationProvider>
+                                <useJakartaEe>true</useJakartaEe>
+                                <delegatePattern>true</delegatePattern>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
