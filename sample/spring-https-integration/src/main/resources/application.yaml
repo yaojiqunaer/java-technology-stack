@@ -1,0 +1,15 @@
+server:
+  port: 443
+  ###服务地址，0.0.0.0表示内外网都可以访问
+#  address: 0.0.0.0
+#  ssl:
+#    enabled: true
+#    key-store-type: PKCS12
+#    key-store: classpath:keystore/https-keystore.p12
+#    key-store-password: changeit
+#    protocol: TLS
+#    enabled-protocols: TLSv1.2
+    # mTLS启用
+#    client-auth: need
+#    trust-store: classpath:keystore/https-truststore.p12
+#    trust-store-password: changeit
