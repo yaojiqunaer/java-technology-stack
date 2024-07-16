@@ -18,6 +18,13 @@
         <module>sample/spring-kafka-integration</module>
         <module>sample/spring-redistempalte-integration</module>
         <module>sample/lombok-mapstruct-integration</module>
+        <module>sample/jvm-gc-test</module>
+        <module>sample/spring-https-integration</module>
+        <module>sample/spring-webflux-integration</module>
+        <module>sample/spring-swagger-codegen-integration</module>
+        <module>sample/spring-openapi-codegen-integration</module>
+        <module>sample/spring-easyexcel-integration</module>
+        <module>sample/spring-plugins-gitinfo</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -70,7 +77,7 @@
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <spring.boot.version>3.2.5</spring.boot.version>
+        <spring.boot.version>3.3.0</spring.boot.version>
         <apache.commons.collections4.version>4.4</apache.commons.collections4.version>
         <apache.httpcomponents.httpclient.version>5.2.1</apache.httpcomponents.httpclient.version>
         <google.guava.version>32.1.1-jre</google.guava.version>
