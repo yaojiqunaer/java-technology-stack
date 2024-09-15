@@ -2,7 +2,6 @@ package io.github.yaojiqunaer.jpaplus;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -24,7 +23,6 @@ import java.util.Map;
  */
 @Configuration
 // JPA实体扫描
-@EntityScan("com.trs.midend.operatelog.SystemLog")
 @EnableJpaRepositories(basePackages = {
         "com.**"},
         repositoryBaseClass = JpaSimpleBaseRepository.class,

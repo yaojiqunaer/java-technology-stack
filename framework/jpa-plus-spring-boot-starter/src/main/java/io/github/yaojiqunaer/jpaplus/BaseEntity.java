@@ -36,7 +36,7 @@ import java.util.Date;
  * 实际属性字段配合以下注解 {@linkplain CreatedBy 创建人}、{@linkplain CreatedDate 创建时间}、{@linkplain LastModifiedBy 修改人}、
  * {@linkplain LastModifiedDate 修改时间}
  * 审计功能userId的复制需要业务处理，具体实现为 {@linkplain JpaAuditorAware Long UserId赋值实现}
- * 最后在 {@link com.trs.midend.db.config.JpaAutoConfiguration} 加入注解 {@link EnableJpaAuditing} 开启JPA审计功能
+ * 最后在 {@link JpaAutoConfiguration} 加入注解 {@link EnableJpaAuditing} 开启JPA审计功能
  */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)

@@ -13,7 +13,7 @@
 -->
 <configuration debug="false">
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
-    <!--    <property name="LOG_HOME" value="/TRS/LOGS/APOLLO/devops_console"/>-->
+    <!--    <property name="LOG_HOME" value="/user/log/"/>-->
     <springProperty scope="context" name="LOG_HOME" source="logging.file.path" defaultValue="${user.dir}"/>
 
     <!--定义主机名-->
