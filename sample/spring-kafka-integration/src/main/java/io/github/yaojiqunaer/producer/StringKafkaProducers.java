@@ -1,19 +1,15 @@
 package io.github.yaojiqunaer.producer;
 
-import io.github.yaojiqunaer.common.KafkaUtils;
 import io.github.yaojiqunaer.exception.ApiResponse;
 import io.github.yaojiqunaer.exception.BaseApiResponse;
 import jakarta.annotation.Resource;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.NotNull;
-
-import java.util.concurrent.CompletableFuture;
 
 import static io.github.yaojiqunaer.common.Const.STRING_TOPIC;
 

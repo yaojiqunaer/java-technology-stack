@@ -1,6 +1,7 @@
+server:
+  port: 8081
 spring:
   kafka:
-
     bootstrap-servers: localhost:9092
     producer:
       retries: 0
@@ -12,11 +13,13 @@ spring:
       group-id: group-id-test
       # 手动提交
       enable-auto-commit: false
-      auto-offset-reset: latest
+      auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       properties:
-        session.timeout.ms: 60000
+        max.poll.interval.ms: 5000
+        heartbeat.interval.ms: 1000
+      client-id: consumer-test2
     listener:
       log-container-config: false
       #concurrency: 5
