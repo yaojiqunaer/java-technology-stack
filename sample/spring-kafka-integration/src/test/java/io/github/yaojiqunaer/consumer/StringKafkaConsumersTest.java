@@ -6,12 +6,11 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.test.context.EmbeddedKafka;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import static io.github.yaojiqunaer.common.Const.STRING_TOPIC;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,18 +31,18 @@ import static org.mockito.Mockito.when;
  */
 @SpringBootTest(classes = {io.github.yaojiqunaer.Application.class},
         webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@DirtiesContext
+//@EnableKafka
 @EmbeddedKafka(
         partitions = 2,
         topics = {STRING_TOPIC},
-        brokerProperties = {"listeners=PLAINTEXT://localhost:9092", "port=9092"})
+        brokerProperties = {"listeners=PLAINTEXT://localhost:0"})
 class StringKafkaConsumersTest {
 
     @Resource
     private KafkaTemplate<String, String> kafkaTemplate;
-    @SpyBean
+    @MockitoSpyBean
     private StringKafkaConsumers stringKafkaConsumers;
-    @MockBean
+    @MockitoBean
     private DownStreamService downStreamService;
 
     @Test
