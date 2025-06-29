@@ -25,6 +25,7 @@
         <module>sample/spring-easyexcel-integration</module>
         <module>sample/spring-plugins-gitinfo</module>
         <module>sample/spring-batch-integration</module>
+        <module>sample/spring-netty-integration</module>
     </modules>
     <packaging>pom</packaging>
 

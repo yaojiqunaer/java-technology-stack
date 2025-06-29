@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netty 聊天室</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .chat-header {
+            background-color: #6c757d;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f8f9fa;
+        }
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 5px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .message-received {
+            background-color: #e9ecef;
+            float: left;
+            clear: both;
+        }
+        .message-sent {
+            background-color: #007bff;
+            color: white;
+            float: right;
+            clear: both;
+        }
+        .message-info {
+            background-color: #ffc107;
+            color: #212529;
+            text-align: center;
+            clear: both;
+            margin: 10px auto;
+            max-width: 70%;
+            float: none;
+        }
+        .message-sender {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .message-time {
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        .message-input {
+            padding: 15px;
+            background-color: #fff;
+            border-top: 1px solid #dee2e6;
+        }
+        .clearfix::after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        .connection-status {
+            margin-bottom: 15px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .connected {
+            background-color: #28a745;
+            color: white;
+        }
+        .disconnected {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chat-container">
+            <div class="chat-header">
+                Netty 聊天室
+            </div>
+            
+            <div class="connection-status" id="status">
+                正在连接...
+            </div>
+            
+            <div class="chat-messages" id="messages">
+                <!-- 消息将在这里显示 -->
+            </div>
+            
+            <div class="chat-input">
+                <form id="message-form" class="row g-3">
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" id="sender" placeholder="您的昵称" required>
+                    </div>
+                    <div class="col-md-7">
+                        <input type="text" class="form-control" id="content" placeholder="输入消息..." required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">发送</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            let stompClient = null;
+            let username = localStorage.getItem('chat-username') || '';
+            
+            // 设置用户名
+            $('#sender').val(username);
+            
+                         // 连接WebSocket
+             function connect() {
+                 const socket = new SockJS('./ws');
+                 stompClient = Stomp.over(socket);
+                
+                stompClient.connect({}, function(frame) {
+                    console.log('Connected: ' + frame);
+                    updateConnectionStatus(true);
+                    
+                    // 订阅消息主题
+                    stompClient.subscribe('topic/messages', function(message) {
+                        showMessage(JSON.parse(message.body));
+                    });
+                    
+                    // 发送系统消息
+                    sendSystemMessage('已连接到聊天室');
+                }, function(error) {
+                    console.log('连接失败: ' + error);
+                    updateConnectionStatus(false);
+                    
+                    // 5秒后重连
+                    setTimeout(connect, 5000);
+                });
+            }
+            
+            // 断开连接
+            function disconnect() {
+                if (stompClient !== null) {
+                    stompClient.disconnect();
+                }
+                console.log("已断开连接");
+                updateConnectionStatus(false);
+            }
+            
+            // 更新连接状态
+            function updateConnectionStatus(connected) {
+                const status = $('#status');
+                if (connected) {
+                    status.text('已连接').removeClass('disconnected').addClass('connected');
+                } else {
+                    status.text('已断开连接，正在尝试重连...').removeClass('connected').addClass('disconnected');
+                }
+            }
+            
+            // 发送消息
+            function sendMessage() {
+                const sender = $('#sender').val().trim();
+                const content = $('#content').val().trim();
+                
+                if (sender && content) {
+                    // 保存用户名
+                    localStorage.setItem('chat-username', sender);
+                    
+                    const message = {
+                        type: 'CHAT',
+                        sender: sender,
+                        content: content,
+                        timestamp: new Date().getTime()
+                    };
+                    
+                    stompClient.send("app/send", {}, JSON.stringify(message));
+                    $('#content').val('');
+                }
+                return false;
+            }
+            
+            // 发送系统消息
+            function sendSystemMessage(content) {
+                const message = {
+                    type: 'CHAT',
+                    sender: '系统',
+                    content: content,
+                    timestamp: new Date().getTime()
+                };
+                showMessage(message, 'info');
+            }
+            
+            // 显示消息
+            function showMessage(message, type) {
+                const messagesContainer = $('#messages');
+                const time = new Date(message.timestamp).toLocaleTimeString();
+                
+                let messageClass = 'message ';
+                if (type === 'info') {
+                    messageClass += 'message-info';
+                } else if (message.sender === $('#sender').val()) {
+                    messageClass += 'message-sent';
+                } else {
+                    messageClass += 'message-received';
+                }
+                
+                const messageElement = `
+                    <div class="${messageClass}">
+                        <div class="message-sender">${message.sender}</div>
+                        <div>${message.content}</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                    <div class="clearfix"></div>
+                `;
+                
+                messagesContainer.append(messageElement);
+                messagesContainer.scrollTop(messagesContainer[0].scrollHeight);
+            }
+            
+            // 表单提交事件
+            $('#message-form').submit(function(e) {
+                e.preventDefault();
+                sendMessage();
+            });
+            
+            // 连接WebSocket
+            connect();
+            
+            // 页面关闭时断开连接
+            $(window).on('beforeunload', function() {
+                disconnect();
+            });
+        });
+    </script>
+</body>
+</html> 
