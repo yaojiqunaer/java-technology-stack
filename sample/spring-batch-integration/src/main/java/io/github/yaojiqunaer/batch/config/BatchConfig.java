@@ -15,6 +15,7 @@ import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.transform.PassThroughLineAggregator;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -57,7 +58,7 @@ public class BatchConfig {
     }
 
     @Bean
-    public Job importPersonJob(JobRepository jobRepository, Step step1) {
+    public Job importPersonJob(JobRepository jobRepository, @Qualifier("step1") Step step1) {
         return new JobBuilder("importPersonJob", jobRepository)
                 .start(step1)
                 .build();
