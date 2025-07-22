@@ -1,27 +1,39 @@
 server:
   port: 8081
+
 spring:
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: localhost:9092 # Kafka集群地址，生产环境建议配置为多个broker地址，提升容错
     producer:
-      retries: 0
-      batch-size: 16384
-      buffer-memory: 33554432
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      retries: 3 # 发送失败重试次数，默认0，建议3
+      batch-size: 16384 # 批量发送消息的大小（字节），默认16384
+      buffer-memory: 33554432 # 生产者缓冲区总大小（字节），默认33554432
+      acks: all # 消息确认级别，默认1。可选:
+                # 0-不等待响应，性能最高但可能丢消息；
+                # 1-leader写入即确认，性能较高，可靠性较好（默认）；
+                # all/-1-leader及所有副本都写入才确认，最安全但性能最低
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer # 必填
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer # 必填
     consumer:
-      group-id: group-id-test
-      # 手动提交
-      enable-auto-commit: false
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: group-id-test # 消费者组ID，必填
+      enable-auto-commit: false # 是否自动提交offset，默认true。可选:
+                                # true-自动提交，开发简单但可能丢消息；
+                                # false-需手动提交，可靠性高，推荐生产环境使用
+      auto-offset-reset: earliest # 无offset时消费起点，默认latest。可选:
+                                 # earliest-从最早消息开始消费（适合全量补数据）；
+                                 # latest-从最新消息开始消费（只消费新消息，默认）；
+                                 # none-无offset时抛异常（严格控制消费进度）
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer # 必填
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer # 必填
       properties:
-        max.poll.interval.ms: 5000
-        heartbeat.interval.ms: 1000
-      client-id: consumer-test2
+        max.poll.interval.ms: 300000 # 最大拉取间隔，默认300000
+        heartbeat.interval.ms: 3000 # 心跳间隔，默认3000
+        session.timeout.ms: 10000 # 会话超时时间，默认10000，范围6000-300000
+        max.poll.records: 500 # 每次poll最大拉取消息数，默认500
+      client-id: consumer-test2 # 客户端ID，默认空
     listener:
-      log-container-config: false
-      #concurrency: 5
-      # 手动提交
-      ack-mode: manual_immediate
+      log-container-config: false # 是否打印监听容器配置，默认false
+      concurrency: 1 # 并发消费线程数，默认1
+      ack-mode: manual_immediate # 消息确认模式，默认batch。可选:
+                                 # record-每条消息提交; batch-批量提交; time-定时提交;
+                                 # count-按数量提交; manual-手动提交; manual_immediate-手动立即提交
