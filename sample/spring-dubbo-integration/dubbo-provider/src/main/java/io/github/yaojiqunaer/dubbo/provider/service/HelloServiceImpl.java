@@ -1,6 +1,6 @@
-package io.github.yaojiqunaer.provider.service;
+package io.github.yaojiqunaer.dubbo.provider.service;
 
-import io.github.yaojiqunaer.api.HelloService;
+import io.github.yaojiqunaer.dubbo.api.HelloService;
 import org.apache.dubbo.config.annotation.DubboService;
 
 /**

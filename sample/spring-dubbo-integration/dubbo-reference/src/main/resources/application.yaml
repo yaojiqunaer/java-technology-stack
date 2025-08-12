@@ -3,7 +3,7 @@ server:
 
 dubbo:
   application:
-    name: consumer-service
+    name: dubbo-reference
   registry:
     # refer: https://cn.dubbo.apache.org/zh-cn/overview/mannual/java-sdk/reference-manual/config/properties/#registry
     address: zookeeper://localhost:2181 # 集群：address=zookeeper://10.20.153.10:2181?backup=10.20.153.11:2181,10.20.153.12:2181

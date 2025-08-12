@@ -8,7 +8,6 @@
 | Atom Material File Icons | 文件图标美化                                         |      |      |
 | CodeGlance Pro           | 代码缩略图                                           |      |      |
 | GenerateAllSetter        | 根据实体一键生成所有setter赋值                       |      |      |
-| GitHub Copilot           | github官方AI编码插件                                 | 是   |      |
 | Grep Console             | 控制台日志颜色                                       |      |      |
 | Key Promoter X           | 快捷键提示 Mac：`command+9`或者`command+shift+9`     |      |      |
 | Maven Helper             | pom的依赖检测和扫描                                  |      |      |

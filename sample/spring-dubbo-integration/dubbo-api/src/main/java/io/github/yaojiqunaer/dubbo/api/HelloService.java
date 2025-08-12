@@ -1,4 +1,4 @@
-package io.github.yaojiqunaer.api;
+package io.github.yaojiqunaer.dubbo.api;
 
 /**
  * @Title

@@ -1,20 +1,18 @@
-package io.github.yaojiqunaer.reference;
+package io.github.yaojiqunaer.dubbo.provider;
 
 import org.apache.dubbo.config.spring.context.annotation.EnableDubbo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @Title
- * @Description:
- * @Create Date: 2025/08/11 22:01
- * @Author xiaodongzhang
+ * Spring Dubbo 集成示例应用
  */
-@SpringBootApplication
 @EnableDubbo
-public class DubboReferenceApplication {
+@SpringBootApplication
+public class DubboProviderApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DubboReferenceApplication.class, args);
+        SpringApplication.run(DubboProviderApplication.class, args);
     }
+
 }

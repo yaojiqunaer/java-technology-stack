@@ -1,6 +1,6 @@
-package io.github.yaojiqunaer.reference.controller;
+package io.github.yaojiqunaer.dubbo.reference.controller;
 
-import io.github.yaojiqunaer.api.HelloService;
+import io.github.yaojiqunaer.dubbo.api.HelloService;
 import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
