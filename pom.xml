@@ -4,6 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.4</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
     <groupId>io.github.yaojiqunaer</groupId>
     <artifactId>java-technology-stack</artifactId>
     <version>0.0.1</version>
@@ -26,6 +32,7 @@
         <module>sample/spring-plugins-gitinfo</module>
         <module>sample/spring-batch-integration</module>
         <module>sample/spring-netty-integration</module>
+        <module>sample/spring-dubbo-integration</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -78,7 +85,7 @@
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <spring.boot.version>3.5.3</spring.boot.version>
+        <spring.boot.version>3.5.4</spring.boot.version>
         <apache.commons.collections4.version>4.4</apache.commons.collections4.version>
         <apache.httpcomponents.httpclient.version>5.2.1</apache.httpcomponents.httpclient.version>
         <google.guava.version>32.1.1-jre</google.guava.version>
@@ -92,14 +99,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring.boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
@@ -117,7 +116,6 @@
                 <artifactId>guava</artifactId>
                 <version>${google.guava.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 

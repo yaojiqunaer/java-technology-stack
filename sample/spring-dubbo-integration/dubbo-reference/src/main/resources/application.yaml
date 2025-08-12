@@ -1,0 +1,13 @@
+server:
+  port: 8082
+
+dubbo:
+  application:
+    name: consumer-service
+  registry:
+    # refer: https://cn.dubbo.apache.org/zh-cn/overview/mannual/java-sdk/reference-manual/config/properties/#registry
+    address: zookeeper://localhost:2181 # 集群：address=zookeeper://10.20.153.10:2181?backup=10.20.153.11:2181,10.20.153.12:2181
+    username: hello
+    password: 1234
+    timeout: 30_000 # 连接超时时间，默认 30s
+    session: 60_000 # 会话超时时间，默认 60s
