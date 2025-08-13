@@ -7,6 +7,7 @@
         <groupId>io.github.yaojiqunaer</groupId>
         <artifactId>java-technology-stack</artifactId>
         <version>0.0.1</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>commons-lang</artifactId>
