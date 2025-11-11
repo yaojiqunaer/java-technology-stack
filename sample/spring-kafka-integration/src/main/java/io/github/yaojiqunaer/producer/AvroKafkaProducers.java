@@ -1,7 +1,6 @@
 package io.github.yaojiqunaer.producer;
 
 import io.github.yaojiqunaer.avro.User;
-import io.github.yaojiqunaer.common.KafkaUtils;
 import io.github.yaojiqunaer.exception.ApiResponse;
 import io.github.yaojiqunaer.exception.BaseApiResponse;
 import jakarta.annotation.Resource;

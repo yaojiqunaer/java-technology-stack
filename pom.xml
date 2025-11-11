@@ -33,6 +33,7 @@
         <module>sample/spring-batch-integration</module>
         <module>sample/spring-netty-integration</module>
         <module>sample/spring-dubbo-integration</module>
+        <module>sample/jdk</module>
     </modules>
     <packaging>pom</packaging>
 
