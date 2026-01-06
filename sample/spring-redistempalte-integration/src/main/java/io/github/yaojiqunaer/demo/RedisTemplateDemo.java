@@ -137,6 +137,8 @@ public class RedisTemplateDemo {
         redisTemplate.opsForZSet().add("sortedSetKey", "sortedSetValue2", 3);
         redisTemplate.opsForZSet().add("sortedSetKey", "sortedSetValue3", 1.23);
         redisTemplate.opsForZSet().add("sortedSetKey", "sortedSetValue4", 0.34);
+        // 按照得分高+完成时间，得分相同时先完成的优先级高
+        redisTemplate.opsForZSet().add("sortedSetKey", "sortedSetValue5", 100 + 1 - System.currentTimeMillis() / 1e13);
         redisTemplate.expire("sortedSetKey", 60, TimeUnit.SECONDS);
     }
 
