@@ -118,6 +118,14 @@ public class RedisTemplateDemo {
         }
     }
 
+    private void setBloomFilter() {
+        redisTemplate.opsForValue().setBit("bloomFilter", 12, true);
+        Boolean bloomFilter = redisTemplate.opsForValue().getBit("bloomFilter", 12);
+        if (Boolean.TRUE.equals(bloomFilter)) {
+            log.info("bloom filter successfully.");
+        }
+    }
+
     private void addSet() {
         redisTemplate.opsForSet().add("setKey", "setValue");
         redisTemplate.opsForSet().add("setKey", "setValue1");
