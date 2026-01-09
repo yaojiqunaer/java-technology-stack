@@ -162,6 +162,21 @@ public class RedisTemplateDemo {
         }
     }
 
+    private void limitRate() {
+        // 固定窗口限流
+        redisTemplate.opsForValue().set("limitRate-string", 1, 1, TimeUnit.MINUTES);
+
+        // 滑动窗口限流 过去60s的请求集合
+        Set<Serializable> serializables = redisTemplate.opsForZSet().rangeByScore("limitRate-zset",
+                System.currentTimeMillis() - 60_000,
+                System.currentTimeMillis());
+        if (serializables != null && serializables.size() > 60) {
+            log.info("滑动窗口限流触发");
+            return;
+        }
+        redisTemplate.opsForZSet().add("limitRate-zset", "limitRate-member", System.currentTimeMillis());
+    }
+
     private void addGeo() {
         redisTemplate.opsForGeo().add("geo", new Point(116.523453, 20.523453), "user1");
         redisTemplate.opsForGeo().add("geo", new Point(135.523453, 21.523453), "user2");
